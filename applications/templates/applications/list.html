@@ -1,0 +1,203 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block pagecss %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">Funding Applications</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">{{ project.name }} Funding Applications </h1>
+        <!-- end page-header -->
+        <div class="row m-b-40" >
+            <div class="col-lg-3">
+                <input type="email" class="form-control m-b-5" placeholder="Search for questions">
+            </div>
+            <div class="col-lg-6">
+                <div class="text-right">
+
+                    <div class="btn-group m-r-5 m-b-5">
+                        <a href="javascript:;" class="btn btn-default">Filter</a>
+                        <a href="javascript:;" data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false"></a>
+                        <ul class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(86px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            <li><a href="javascript:;">Most Recent</a></li>
+                            <li><a href="javascript:;">Category</a></li>
+                        </ul>
+                    </div>
+                    <a href="#modal-new" class="btn btn-primary" data-toggle="modal">Add New</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-9">
+
+                <div class="panel panel-inverse" data-sortable-id="index-8">
+
+                    <div class="panel-body p-0">
+                        <table class="table table-valign-middle">
+                            <thead>
+                                <th>Project</th>
+                                <th>Fund Name</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+
+                            {% for app in applications %}
+                                <tr>
+                                <td>{{ app.project.name }}</td>
+                                <td>{{ app.funding.fund_name }}</td>
+                                <td>{{ app.status }}</td>
+                                <td>{{ app.created_at|naturalday  }}</td>
+                                <td>
+                                    <!--<button class="btn btn-danger m-r-5 m-b-5">-->
+                                    <!--Delete-->
+                                    <!--<i class="fa fa-fw  fa-trash-alt"></i>-->
+                                    <!--</button>-->
+                                    <a href="{% url 'applications:edit' id=app.id %}"
+                                       class="btn btn-default m-r-5 m-b-5" >
+                                        View <i class="fa fa-fw  fa-eye"></i>
+                                    </a>
+{#                                    <a href="#modal-edit" class="btn btn-default m-r-5 m-b-5" data-toggle="modal">#}
+{#                                        View <i class="fa fa-fw  fa-eye"></i>#}
+{#                                    </a>#}
+                                </td>
+                            </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">No application for the project</td>
+                                </tr>
+                            {% endfor %}
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end #content -->
+    <div class="modal fade" id="modal-new" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title">New Application</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+{#                        <div class="form-group">#}
+{#                            <label>Project</label>#}
+{#                            <select class="form-control">#}
+{#                                <option>--Select Project---</option>#}
+{#                                <option>Project 1</option>#}
+{#                                <option>Project 2</option>#}
+{#                            </select>#}
+{#                        </div>#}
+                        <div class="form-group">
+                            <label>Fund Name</label>
+                            <select class="form-control" name="funding" value="{{ form.funding.value }}">
+                                <option>--Select Fund Name---</option>
+                                {% for f in funding %}
+                                    <option value="{{ f.id }}">{{ f.fund_name }} - {{ f.agency }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>You approves the application?</label>
+                            <select class="form-control" name="request" value="{{ form.request.value }}">
+                                <option>--Select User---</option>
+                                {% for u in users %}
+                                     <option value="{{ u.uuid }}" >{{ u.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Application Portal Username</label>
+                            <input class="form-control" type="text" placeholder="" name="username" value="{{ form.username.value }}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Application Portal Password</label>
+                            <input class="form-control" type="text" placeholder="" value="{{ form.password.value }}" name="password"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea class="form-control" name="comment">{{ form.username.value }}</textarea>
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
+                    <button type="submit" class="btn btn-danger">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-edit" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Newton Road Construction Application</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+                            <label>Project</label>
+                            Newton Road Construction
+                        </div>
+                        <div class="form-group">
+                            <label>Fund Name</label>
+                            Provincial Road Construction Fund
+                        </div>
+                        <div class="form-group">
+                            <label>You approves the application?</label>
+                            Cassie James
+                        </div>
+                        <div class="form-group">
+                            <label>Application Portal Username</label>
+                            test
+                        </div>
+                        <div class="form-group">
+                            <label>Application Portal  Password</label>
+                            test
+                        </div>
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <p>
+                                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+                                Donec ullamcorper nulla non metus auctor fringilla.
+                            </p>
+
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
+                    <a href="{% url 'applications:edit' id="fdfd" %}" class="btn btn-danger">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}

@@ -1,0 +1,218 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+{% block pagecss %}
+    <link href="../assets/plugins/jquery-jvectormap/jquery-jvectormap.css" rel="stylesheet" />
+    <link href="../assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <link href="../assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">Projects</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">Projects</h1>
+        <!-- end page-header -->
+        <div class="row m-b-40" >
+            <div class="col-lg-3">
+                <input type="email" class="form-control m-b-5" placeholder="Search">
+            </div>
+            <div class="col-lg-6">
+
+                    <a href="#modal-new" class="btn btn-primary" data-toggle="modal">Add New</a>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <div class="panel panel-inverse" style="background: none">
+
+                    <div class="panel-body p-10">
+                        <div style="background: #fff">
+                            <div class="task-header" style="border-bottom: 2px solid #ccc;">
+                                <div class="row p-10">
+                                    <div class="col-lg-6  f-w-500">
+                                        <strong>Milestones Due Soon</strong>
+                                    </div>
+                                    <div class="col-lg-6 text-right">
+                                        <!--<a class=""-->
+                                           <!--href="tasks.html">See all my tasks</a>-->
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+                            <table class="table m-b-0">
+                                <thead>
+{#                                <tr>#}
+{#                                    <th>Milestone Name</th>#}
+{#                                    <th></th>#}
+{#                                    <th></th>#}
+{#                                </tr>#}
+                                </thead>
+                                <tbody>
+                                {% for milestone in milestones %}
+                                 <tr>
+                                    <td>{{ milestone.name }}</td>
+                                    <td>{{ milestone.assignee.full_name }}</td>
+                                    <td>{{ milestone.due_date|naturalday }}</td>
+                                </tr>
+                                    {% empty %}
+                                    <tr><td colspan="3">No milestone for this project</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+{#                                <ul class="todolist">#}
+{#                                    {% for m in milestones %}#}
+{#                                    <li>#}
+{#                                        <a href="javascript:;" class="todolist-container" data-click="todolist">#}
+{#                                            <div class="todolist-input"><i class="fa fa-square"></i></div>#}
+{#                                            <div class="todolist-title" style="width: 100%">#}
+{#                                                <div class="text-left">#}
+{#                                                    Duis pharetra mi sit amet dictum congue.#}
+{#                                                </div>#}
+{#                                                <div class="text-right">#}
+{#                                                    <small>10-15-2019</small>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                        {% empty %}#}
+{#                                        <li> No milestones </li>#}
+{#                                    {% endfor %}#}
+{#                                </ul>#}
+                            </div>
+                        </div>
+                        <div class="task-header m-t-15" >
+                            <div class="row p-10">
+                                <div class="col-lg-6  f-w-500">
+                                    <strong>Projects</strong>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                {% for project in projects %}
+                                        <div class="col-sm-4">
+                                    <div class="card">
+                                        <div class="card-block">
+                                            <h4 class="card-title">{{ project.name }}</h4>
+                                            <h6 class="card-subtitle m-b-10 text-muted">
+                                                <span class="m-r-5">Start Date: {{ project.start_date|naturalday }}</span>
+                                                <span class="">End Date: {{ project.end_date|naturalday }}</span>
+                                            </h6>
+                                            <p class="card-text"></p>
+                                            <p class="card-text"><small class="text-muted">
+                                                {{ project.created_at|naturaltime }}</small></p>
+                                            <a href="{% url "projects:milestone" id=project.id %}" class="card-link">Milestones</a>
+                                            <a href="{% url "projects:applications" id=project.id %}" class="card-link">Applications</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                    {% empty %}
+                                    <div class="text-center">No project created</div>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <div class="modal fade" id="modal-new" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+             <form action="" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Project Details</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+
+                    {%  csrf_token %}
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input class="form-control"
+                                   value="{{ form.name.value }}"
+                                   name="name"
+                                   type="text"/>
+                        </div>
+                        <div class="form-inline m-b-5">
+                            <div class="form-group m-r-5">
+                                <label class="m-r-3">Start Date</label>
+                                <input class="form-control"
+                                        value="{{ form.start_date.value }}"
+                                        name="start_date"
+                                       type="date"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="m-r-3">End Date</label>
+                                <input class="form-control"
+                                        value="{{ form.end_date.value }}"
+                                        name="end_date"
+                                       type="date"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select class="form-control"  value="{{ form.category.value }}"
+                                   name="category">
+                                <option>--Select Category---</option>
+                                <option>Agriculture</option>
+                                <option>Infrastructure</option>
+                                <option>Green Initiative</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Funding</label>
+                            <select class="form-control" multiple  value="{{ form.funding.value }}"
+                                   name="funding">
+                                <option >--Select Funding---</option>
+                                {% for f in funding %}
+                                    <option value="{{ f.id }}">{{f.fund_name}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Budget</label>
+                            <input class="form-control" value="{{ form.budget.value }}"
+                                   name="budget" type="tel"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" name="description"> {{ form.description.value }}</textarea>
+                        </div>
+                        <div>
+                            <label>Uploading supporting document </label>
+                            <input class="form-control" type="file" name="file">
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
+                    <button type="submit" class="btn btn-success" >Save</button>
+                </div>
+             </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}

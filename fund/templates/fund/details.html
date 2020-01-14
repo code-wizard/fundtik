@@ -1,0 +1,80 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block pagecss %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">Funding</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">Details </h1>
+        <!-- end page-header -->
+
+        <div class="row m-b-40">
+            <div class="col-lg-10 panel panel-inverse" data-sortable-id="index-8">
+                <div class="p-10">
+                    <h2>{{ fund.fund_name }}</h2>
+                    <div><small>{{ fund.agency }}</small>
+                        <a href="{{ fund.web_link }}">Visit Website</a>
+                    </div>
+                    <div class="m-t-10">
+                        <strong>Amount: </strong> ${{ fund.amount | intcomma }}
+                    </div>
+                    <div  class="m-t-15" >
+                        <strong>Categories: </strong>
+                    </div>
+                    <div class="m-b-3 m-t-3">
+                        {% for c in fund.categories %}
+                            <span class="label label-inverse">{{ c }}</span>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="m-t-15">
+                        <span class="m-r-10"><label>Opening Date:</label> {{ fund.opening_date|date:"m-d-Y" }}</span>
+                        <label>Closing Date:</label> {{ fund.closing_date|date:"m-d-Y" }}
+                    </div>
+                    <div class="m-t-15">
+                        <h3>Key Contact</h3>
+                        <div>
+                            {{ fund.key_contacts }}
+                        </div>
+                    </div>
+                    <div class="m-t-15">
+                            <h3>Qualifiers</h3>
+                        <p>
+                            {{ fund.qualifiers }}
+                        </p>
+                    </div>
+                    <div class="m-t-15">
+                        <h3>Contribution Requirements</h3>
+                        <p>
+                            {{ fund.requirements }}
+                        </p>
+                    </div>
+                    <div class="m-t-15">
+                        <h3>Files Uploaded</h3>
+                        <ul>
+                            <li>{{ fund.file.name }} <a href="{{ fund.file.url }}" class="btn btn-link m-b-5">Download</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- end row -->
+    </div>
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}
