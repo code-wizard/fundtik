@@ -1,0 +1,125 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block pagecss %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">Funding</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">Add New Funding </h1>
+        <!-- end page-header -->
+
+        <div class="row m-b-40">
+            <div class="col-lg-10 panel panel-inverse" data-sortable-id="index-8">
+                <div class="">
+                    <div class="panel-body p-t-10">
+                        {{ form.non_field_errors }}
+                    <form action="{% url "fund:add" %}" method="post" enctype="multipart/form-data">
+                        {%  csrf_token %}
+                        <div class="row row-space-10">
+                                <div class="col-md-6">
+                                <div class="form-group m-b-10">
+                                    <label>Funding Agency</label>
+                                    <input class="form-control" name="agency"
+                                           value = "{{ form.agency.value }}"
+                                           type="text" placeholder="Funding Agency">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label>Fund Name</label>
+                                    <input class="form-control"
+                                           value = "{{ form.fund_name.value }}"
+                                           name="fund_name" type="text" placeholder="Fund Name">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label>Web Link</label>
+                                    <input class="form-control"
+                                           value ="{{ form.web_link.value }}"
+                                           name="web_link" type="url" placeholder="Web link">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label>Opening Date</label>
+                                    <input class="form-control"
+                                           value = "{{ form.opening_date.value }}"
+                                           name="opening_date" type="date" placeholder="Opening Date">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label>Closing Date</label>
+                                    <input class="form-control"
+                                           value = "{{ form.closing_date.value }}"
+                                           name="closing_date" type="date" placeholder="Closing Date">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label>Amount</label>
+                                    <input class="form-control"
+                                           value = "{{ form.amount.value }}"
+                                           name="amount" type="tel" placeholder="Amount">
+                                </div>
+                                <div class="form-group m-b-10">
+                                    <label class="form-check-label" > Re-occurrence </label>
+                                    <select class="form-control"
+                                            value = "{{ form.occurrence.value }}"
+                                            name="occurrence">
+                                        <option>Month</option>
+                                        <option>Year</option>
+                                    </select>
+                                </div>
+                                 <div class="form-group m-b-10">
+                                    <label class="form-check-label" > Occurrence Frequency </label>
+                                    <input class="form-control"
+                                           value = "{{ form.occurrence_no.value }}"
+                                           type="tel" placeholder="" name="occurrence_no">
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Key Contacts</label>
+                                    <textarea class="form-control"
+                                              rows="3" name="key_contacts">{{ form.key_contacts.value }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Qualifiers</label>
+                                    <textarea class="form-control" rows="3"
+                                              name="qualifiers">{{ form.qualifiers.value }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Contribution Requirements</label>
+                                    <textarea class="form-control" rows="3"
+                                              name="requirements">{{ form.requirements.value }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Categories</label>
+                                    <textarea class="form-control" rows="3"
+                                              name="categories">{{ form.categories.value }}</textarea>
+                                </div>
+                                <div>
+                                    <label>Uploading supporting document </label>
+                                    <input class="form-control" type="file" name="file">
+                                </div>
+                            </div>
+                            <div class="m-t-15 pull-right" style="width: 100%">
+                                <button type="submit" class="btn btn-sm btn-primary m-r-5">Save</button>
+                                <a href="{% url "fund:list" %}" class="btn btn-sm btn-default">Cancel</a>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- end row -->
+    </div>
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}

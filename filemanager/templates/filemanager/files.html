@@ -1,0 +1,193 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+{% block pagecss %}
+    <style>
+        .file {
+            zoom: 1;
+            display: inline-block;
+            padding-top: 5px;
+            border-radius: .1875rem;
+            border: 1px solid #D1D3D4;
+            position: relative;
+            overflow: hidden;
+            width: 220px;
+        }
+         .media-object {
+            width: 32px;
+            border: 2px solid #fff;
+            box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2)
+        }
+        .team-info li{
+            display: inline-block;
+            margin-left: -10px;
+        }
+
+        .media .media-heading{
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">File Manager</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">File Manager</h1>
+        <!-- end page-header -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                            <h4 class="panel-title">Recently Accessed Files</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="file">
+                                    <div class="media cursor">
+                                        <a class="m-r-2" >
+                                            <i class="fas fa-lg fa-fw fa-3x fa-file-word"></i>
+                                        </a>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">2018 Budget</h4>
+                                            <p>Size: 30KB</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="file">
+                                    <div class="media">
+                                        <a class=" m-r-2" >
+                                            <i class="fas fa-lg fa-fw fa-3x fa-file-pdf"></i>
+                                        </a>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">Research Reports</h4>
+                                            <p>Size: 300KB</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="file">
+                                    <div class="media">
+                                        <a class=" m-r-2" >
+                                            <i class="fas fa-lg fa-fw fa-3x fa-folder"></i>
+                                        </a>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">2018 Budget Files</h4>
+                                            <p>Size: 400KB</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-inverse">
+                        <!-- begin panel-body -->
+                        <div class="panel-body">
+                        	<!-- begin table-responsive -->
+                        	<div class="table-responsive">
+								<table class="table table-hover m-b-0 text-inverse">
+									<thead>
+										<tr>
+											<th></th>
+											<th>Name</th>
+											<th>Owner</th>
+											<th>Last Updated</th>
+											<th>File Size</th>
+
+										</tr>
+									</thead>
+									<tbody>
+										    <tr>
+                                                <td width="10"><i class="fas fa-lg fa-fw fa-folder"></i></td>
+                                                <td>
+                                                    <h6 class="mb-0">Work Budget</h6>
+                                                </td>
+{#                                                <td>#}
+{#                                                    <ul class="list-unstyled team-info mb-0">#}
+{#                                                        <li ><img src="{% static 'main/img/user/user-1.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-2.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-3.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                    </ul>#}
+{#                                                </td>#}
+                                                <td>
+                                                    <div class="text-info">Me</div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-info">Oct 7, 2018</div>
+                                                </td>
+                                                <td>
+                                                   <div class="text-info">-</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="10"><i class="fas fa-lg fa-fw fa-file-pdf"></i></td>
+                                                <td>
+                                                    <h6 class="mb-0">report-2018.pdf</h6>
+                                                </td>
+{#                                                <td>#}
+{#                                                    <ul class="list-unstyled team-info mb-0">#}
+{#                                                        <li ><img src="{% static 'main/img/user/user-1.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-2.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-3.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                    </ul>#}
+{#                                                </td>#}
+                                                <td>
+                                                    <div class="text-info">Me</div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-info">Jul 17, 2019</div>
+                                                </td>
+                                                <td>
+                                                   <div class="text-info">15KB</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="10"><i class="fas fa-lg fa-fw fa-file-word"></i></td>
+                                                <td>
+                                                    <h6 class="mb-0">new project.doc</h6>
+                                                </td>
+{#                                                <td>#}
+{#                                                    <ul class="list-unstyled team-info mb-0">#}
+{#                                                        <li ><img src="{% static 'main/img/user/user-1.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-2.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                        <li><img src="{% static 'main/img/user/user-3.jpg' %}" class="media-object rounded-corner"></li>#}
+{#                                                    </ul>#}
+{#                                                </td>#}
+                                                <td>
+                                                    <div class="text-info">Jeremy</div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-info">Jan 7, 2019</div>
+                                                </td>
+                                                <td>
+                                                   <div class="text-info">20MB</div>
+                                                </td>
+                                            </tr>
+
+									</tbody>
+								</table>
+							</div>
+							<!-- end table-responsive -->
+                        </div>
+                        <!-- end panel-body -->
+                    </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}

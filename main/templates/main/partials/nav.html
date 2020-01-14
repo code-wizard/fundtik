@@ -1,0 +1,82 @@
+{%  load static  %}
+<div id="sidebar" class="sidebar">
+			<!-- begin sidebar scrollbar -->
+			<div data-scrollbar="true" data-height="100%">
+				<!-- begin sidebar user -->
+				<ul class="nav">
+					<li class="nav-profile">
+						<a href="javascript:;" data-toggle="nav-profile">
+							<div class="cover with-shadow"></div>
+							<div class="image">
+								<img src="{% static 'main/img/user/user-13.jpg' %}" alt="" />
+							</div>
+							<div class="info">
+								Jeremy Schwartz
+								<small>Economic Dev Officer</small>
+							</div>
+						</a>
+					</li>
+
+				</ul>
+				<!-- end sidebar user -->
+				<!-- begin sidebar nav -->
+
+<ul class="nav">
+					<li class="nav-header">Navigation</li>
+					<li class="has-sub active">
+						<a href="{% url 'main:dashboard' %}">
+						    <i class="fa fa-th-large"></i>
+						    <span>Dashboard</span>
+					    </a>
+					</li>
+
+					<li class="has-sub active">
+						<a href="{% url 'projects:list' %}">
+							<i class="fa fa-lightbulb"></i>
+							<span>Projects</span>
+						</a>
+					</li>
+					<li class="has-sub active">
+						<a href="{% url 'fund:list' %}">
+							<i class="fa fa-dollar-sign"></i>
+							<span>Funding</span>
+						</a>
+					</li>
+					<li class="has-sub active">
+						<a href="{% url 'applications:list' %}">
+							<i class="fa fa-pencil-alt"></i>
+							<span>Application</span>
+						</a>
+					</li>
+					<li class="has-sub active">
+						<a href="{% url 'questions:list' %}">
+							<i class="fa fa-question"></i>
+							<span>Question Bank</span>
+						</a>
+					</li>
+                    <li class="has-sub active">
+						<a href="{% url 'projects:tasks' %}">
+							<i class="fa fa-tasks"></i>
+							<span>My Task</span>
+						</a>
+					</li>
+					<li class="has-sub active">
+						<a href="{% url 'accounts:staff' %}">
+							<i class="fa fa-users"></i>
+							<span>Staff</span>
+						</a>
+					</li>
+					<li class="has-sub active">
+						<a href="{% url 'filemanager:files' %}">
+
+							<i class="fa fa-book"></i>
+							<span>File Manager</span>
+						</a>
+					</li>
+
+				</ul>
+				<!-- end sidebar nav -->
+			</div>
+			<!-- end sidebar scrollbar -->
+		</div>
+<div class="sidebar-bg"></div>

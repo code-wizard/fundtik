@@ -1,0 +1,180 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+{% block pagecss %}
+{% endblock %}
+
+{% block content %}
+    <div id="content" class="content">
+        <!-- begin breadcrumb -->
+        <ol class="breadcrumb pull-right">
+            <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+            <li class="breadcrumb-item active">Question Bank</li>
+        </ol>
+        <!-- end breadcrumb -->
+        <!-- begin page-header -->
+        <h1 class="page-header">Question Bank </h1>
+        <!-- end page-header -->
+        <div class="row m-b-40" >
+            <div class="col-lg-3">
+                <input type="email" class="form-control m-b-5" placeholder="Search for questions">
+            </div>
+            <div class="col-lg-6">
+                <div class="text-right">
+
+                    <div class="btn-group m-r-5 m-b-5">
+                        <a href="javascript:;" class="btn btn-default">Filter</a>
+                        <a href="javascript:;" data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false"></a>
+                        <ul class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(86px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            <li><a href="javascript:;">Most Recent</a></li>
+                            <li><a href="javascript:;">Category</a></li>
+                        </ul>
+                    </div>
+                    <a href="#modal-new" class="btn btn-primary" data-toggle="modal">Add New</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-9">
+
+                <div class="panel panel-inverse" data-sortable-id="index-8">
+
+                    <div class="panel-body p-0">
+                        <table class="table table-valign-middle">
+                            <thead>
+
+                            </thead>
+                            <tbody>
+
+                            {% for q in questions %}
+                                <tr>
+                                <td>
+                                    <div>
+                                        <div ><h6>{{ q.title }}</h6></div>
+                                        <div class="m-t-5">
+                                            {% for c in q.tag %}
+                                                <span class="label label-success">{{ c }}</span>
+                                            {% endfor %}
+                                        </div>
+                                     <p class="m-t-5">
+                                        {{ q.answer }}
+                                    </p>
+                                    </div>
+                                    <div class="m-t-5">
+                                        <span class="m-r-10">Last Edit: <strong>{{ q.updated_at |naturaltime }}</strong></span>
+                                        <span class="m-r-10">Created: <strong>{{ q.created_at | naturaltime }}</strong></span>
+                                        <span class="m-r-10">Created By: <strong>{{ q.created_by.full_name }}</strong></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger m-r-5 m-b-5">
+                                        Delete
+                                        <i class="fa fa-fw  fa-trash-alt"></i>
+                                    </button>
+                                    <a href="#modal-edit" class="btn btn-default m-r-5 m-b-5" data-toggle="modal">
+                                        View
+                                        <i class="fa fa-fw  fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">No question added</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end #content -->
+    <div class="modal fade" id="modal-new" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="" method="post">
+                    {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Question</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+                            <label>Question</label>
+                            <input class="form-control" type="text"
+                                   name="title"
+                                   value="{{ form.title.value }}"
+                                   placeholder=""/>
+                        </div>
+                        <div class="form-group">
+                            <label>Answer</label>
+                            <textarea name="answer" class="form-control">{{ form.answer.value }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Life Cycle (in months)</label>
+                            <input class="form-control" type="tel" name="life_cycle" value="{{ form.life_cycle.value }}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Question Tag</label>
+                            <textarea class="form-control" name="tag">{{ form.tag.value }}</textarea>
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
+                    <button class="btn btn-danger" >Save</button>
+                </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-edit" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Question</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+
+                        <div class="form-group">
+                            <label>Question</label>
+                            <input class="form-control" type="text"
+                                   name="title"
+                                   value="{{ form.title.value }}"
+                                   placeholder=""/>
+                        </div>
+                        <div class="form-group">
+                            <label>Answer</label>
+                            <textarea name="answer" class="form-control">{{ form.answer.value }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Life Cycle (in months)</label>
+                            <input class="form-control" type="tel"  value="{{ form.life_cycle.value }}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Question Tag</label>
+                            <textarea class="form-control" name="tag">{{ form.tag.value }}</textarea>
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
+                    <button class="btn btn-danger" >Save</button>
+                </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{#{% block pagejs %}#}
+{##}
+{#{% endblock %}#}
