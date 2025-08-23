@@ -3,7 +3,6 @@ from django.db import models
 
 # Create your models here.
 import os
-from django.contrib.postgres.fields import ArrayField
 
 from fund.models import FbFunding
 from projects.models import FbProjects

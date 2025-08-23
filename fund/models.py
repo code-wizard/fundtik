@@ -1,7 +1,6 @@
 import os
 
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 # Create your models here.
@@ -34,7 +33,8 @@ class FbFunding(models.Model):
     requirements = models.TextField(null=True)
     file = models.FileField(upload_to=doc_upload_path, null=True)
     document_id = models.CharField(max_length=255, null=True)
-    categories = ArrayField(base_field=models.CharField(max_length=255))
+    # Store categories as a comma-separated string (SQLite compatible)
+    categories = models.TextField(null=True, blank=True, help_text="Comma-separated categories")
 
 
 

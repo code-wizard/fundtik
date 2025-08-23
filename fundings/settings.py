@@ -13,8 +13,7 @@ import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from decouple import config
-
+\
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -50,10 +49,11 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'accounts',
-	'projects',
+    'projects',
     'applications',
     'fund',
     'questions',
+    'staff',
     'filemanager',
     'main'
 ]
@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -99,39 +100,16 @@ ASGI_APPLICATION = 'fundings.routing.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-PUBLIC_KEY_PEM = config("PUBLIC_KEY_PEM")
-PSPDF_SERVER = config("PSPDF_SERVER")
-PSPDF_AUTH_TOKEN = config("PSPDF_AUTH_TOKEN")
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("DB_NAME"),
-        'USER': config("DB_USER"),
-        'PASSWORD': config("DB_PASSWORD"),
-        'HOST': config("DB_HOST"),
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-# Redis Settings
-
 CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [config('REDIS_URL')],
-            },
-        },
-}
-
-CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": config('REDIS_CACHE_URL'),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     }
 }
 # Password validation
@@ -187,41 +165,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-# AWS Settings
-AWS_STATIC_LOCATION = config("AWS_STATIC_LOCATION")
-AWS_DEFAULT_ACL = None
-
-AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_HOST = "s3.ap-south-1.amazonaws.com"
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.ap-south-1.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-S3_USE_SIGV4 = True
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_REGION_NAME = config("AWS_REGION")
 # STATICFILES_STORAGE = config("STATICFILES_STORAGE")
-AWS_PUBLIC_MEDIA_LOCATION = config("AWS_PUBLIC_MEDIA_LOCATION")
-DEFAULT_FILE_STORAGE = config("DEFAULT_FILE_STORAGE")
-
-AWS_PRIVATE_MEDIA_LOCATION = config("AWS_PRIVATE_MEDIA_LOCATION")
-PRIVATE_FILE_STORAGE = 'core.storage_backends.PrivateMediaStorage'
+# Use default file storage (filesystem)
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 # STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 STATIC_URL = '/static/'
 
 # Session Settings
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 
-# Email configuration
-
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = config("EMAIL_PORT")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS")
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 # Django All Auth Settings
 
@@ -258,18 +211,10 @@ ACCOUNT_FORMS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
-REST_USE_JWT = True
-JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_VERIFY_EXPIRATION': True,
-    'JWT_AUTH_COOKIE': 'token',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30)
-}
 
 
 REST_AUTH_SERIALIZERS = {

@@ -4,7 +4,6 @@ from django.db import models
 # Create your models here.
 import os
 
-from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 from django.utils import timezone
@@ -19,7 +18,8 @@ class FbQuestions(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(FbUser, related_name="created_questions", on_delete=models.CASCADE)
     life_cycle = models.PositiveIntegerField()
-    tag = ArrayField(base_field=models.CharField(max_length=255))
+    # Store tags as a comma-separated string (SQLite compatible)
+    tag = models.TextField(null=True, blank=True, help_text="Comma-separated tags")
 
 
 

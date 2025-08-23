@@ -10,7 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.forms import TextInput, CharField
 from django.http import HttpResponse
 from django.urls import reverse
-from django.utils.translation import  ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from accounts.utils import filter_users_by_email_or_phone
 

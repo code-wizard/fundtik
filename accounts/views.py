@@ -2,8 +2,7 @@ import json
 
 from allauth.account import signals, app_settings
 from allauth.account.adapter import get_adapter
-from allauth.account.utils import passthrough_next_redirect_url, perform_login, url_str_to_user_pk, \
-    logout_on_password_change, complete_signup, get_next_redirect_url
+from allauth.account.utils import passthrough_next_redirect_url, perform_login, complete_signup
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.utils import get_request_param
 from django.conf import settings
@@ -13,7 +12,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from rest_auth.utils import jwt_encode
 from accounts import forms
 from allauth.account.views import SignupView, LoginView, ConfirmEmailView, LogoutView, PasswordResetView, \
     PasswordResetDoneView, PasswordResetFromKeyView, PasswordResetFromKeyDoneView, PasswordSetView, \
@@ -104,7 +102,6 @@ class WsLogoutView(LogoutView):
 
     def render_to_response(self, context, **response_kwargs):
         response = super(WsLogoutView, self).render_to_response(context, **response_kwargs)
-        response.delete_cookie("token")
         return response
 
     def logout(self):
@@ -176,14 +173,12 @@ def login_redirect(request):
     #     success_url = reverse_lazy("guest:home")
     # response = render(request, "accounts/login_redirect.html", context={"frontend": success_url})
     # response.set_cookie("_u", json.dumps(WsUserDetailSerailier(request.user).data))
-    # response.set_cookie("token", jwt_encode(request.user))
     # return response
     return render(request, "accounts/login_redirect.html")
 
 
 def post_logout_redirect(request):
     response = render(request, "accounts/logout.html")
-    response.delete_cookie("token")
     response.delete_cookie("_u")
     return response
 
@@ -266,7 +261,6 @@ class WsPasswordChangeView(PasswordChangeView):
 
     def form_valid(self, form):
         form.save()
-        logout_on_password_change(self.request, form.user)
         get_adapter(self.request).add_message(
             self.request,
             messages.SUCCESS,

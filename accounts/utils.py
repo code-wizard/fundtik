@@ -1,7 +1,6 @@
 import datetime
 import os
 
-from Crypto.PublicKey import RSA
 from PIL import Image
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress
@@ -14,8 +13,6 @@ from django.db.models import Q
 from allauth.account import signals
 from django.forms.utils import ErrorList
 from rest_framework import serializers
-import jwt
-from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 
 
 def get_last_and_first_from_full_name(full_name):
@@ -110,17 +107,3 @@ def setup_user_email(request, user, addresses):
         user.save()
     return primary
 
-
-def generate_jwt(user, document, **kwargs):
-    # jwt.unregister_algorithm('RS256')
-    permissions = ["read-document", "write"]
-    # jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
-    key = open("./jwtRS256.key", "rb")
-    # rsa_key = RSA.importKey(key.read(), passphrase="secret")
-    s = key.read()
-    rsa_key = load_pem_private_key(s, password=b'fundkit-passphrase', backend=default_backend())
-    encoded_jwt = jwt.encode({"document_id": document,
-                              # "user_id": str(user.uuid),
-                              "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30),
-                              "permissions": permissions}, rsa_key, algorithm="RS256")
-    return str(encoded_jwt, "utf-8")

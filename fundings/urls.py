@@ -23,6 +23,7 @@ urlpatterns = [
     path("applications/", include("applications.urls")),
     path("questions/", include("questions.urls")),
     path("fund/", include("fund.urls")),
+    path("staff/", include("staff.urls")),
     path("file-manager/", include("filemanager.urls")),
     path("", include("main.urls"))
 ]

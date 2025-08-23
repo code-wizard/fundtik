@@ -4,7 +4,6 @@ from django.db import models
 # Create your models here.
 import os
 
-from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 from django.utils import timezone

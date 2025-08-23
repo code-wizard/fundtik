@@ -8,7 +8,7 @@ from django.db import models
 # Create your models here.
 from django.utils import timezone
 
-from core.storage_backends import PublicMediaStorage
+from django.core.files.storage import FileSystemStorage
 
 MARITAL_STATUS = (("married", "Married"), ("single", "Single"), ("divorced", "Divorced"))
 GENDER = (("f", "Female"), ("m", "Male"))
@@ -29,7 +29,7 @@ class FbUser(AbstractUser):
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    avatar = models.ImageField(upload_to=avatar_upload_path, storage=PublicMediaStorage(), null=True, blank=True)
+    avatar = models.ImageField(upload_to=avatar_upload_path, storage=FileSystemStorage(), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False,
