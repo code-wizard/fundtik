@@ -71,7 +71,7 @@
                                 <a><i class="fab fa-lg fa-fw m-r-10 fa-slack"></i></a>
                             </div>
 							<button class="btn btn-sm btn-primary" onclick="openEditModal({{ staff.pk }}, '{{ staff.first_name }}', '{{ staff.last_name }}', '{{ staff.email }}', '{{ staff.position }}')">Edit</button>
-                            <a href="{% url 'staff_delete' staff.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{% url 'staff:staff_delete' staff.pk %}" class="btn btn-sm btn-danger">Delete</a>
 						</div>
 					</div>
             </div>
@@ -136,10 +136,8 @@
         </div>
 </div>
 
-{% endblock %}
-
-{% block pagejs %}
 <script>
+    // Wait for document ready
     $(document).ready(function() {
         // Get CSRF token
         function getCookie(name) {
@@ -203,9 +201,6 @@
                 }
             });
         });
-        
-        // Initialize App after our custom JavaScript
-        App.init();
     });
 
     function performSearch(query) {
@@ -230,7 +225,7 @@
         $('#submitBtn').text('Add Staff');
         $('#staffForm')[0].reset();
         $('#staff_id').val('');
-        $('#staffForm').attr('action', '{% url "staff_create" %}');
+        $('#staffForm').attr('action', '{% url "staff:staff_create" %}');
     }
     
     function openEditModal(id, firstName, lastName, email, position) {
@@ -245,4 +240,5 @@
         $('#staffModal').modal('show');
     }
 </script>
+
 {% endblock %}
