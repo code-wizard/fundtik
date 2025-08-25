@@ -166,3 +166,34 @@ class WsResetPasswordForm(forms.Form):
                 context)
         return self.cleaned_data["email"]
 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        from django.contrib.auth import get_user_model
+        model = get_user_model()
+        fields = ['first_name', 'middle_name', 'last_name', 'email', 'phone', 'avatar']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'middle_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': True}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('This email is already in use.')
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if User.objects.filter(phone=phone).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('This phone number is already in use.')
+        return phone
+

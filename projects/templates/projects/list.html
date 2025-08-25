@@ -19,12 +19,29 @@
         <h1 class="page-header">Projects</h1>
         <!-- end page-header -->
         <div class="row m-b-40" >
-            <div class="col-lg-3">
-                <input type="email" class="form-control m-b-5" placeholder="Search">
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search projects by name, category, or description..." value="{{ search_query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-6">
-
-                    <a href="#modal-new" class="btn btn-primary" data-toggle="modal">Add New</a>
+            <div class="col-lg-4">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#projectModal" onclick="openCreateModal()">
+                    <i class="fa fa-plus"></i> Add New Project
+                </button>
+            </div>
+            <div class="col-lg-4 text-right">
+                <span class="text-muted" id="searchResults">
+                    {% if search_query %}
+                        Found {{ projects|length }} result{{ projects|length|pluralize }} for "{{ search_query }}"
+                    {% else %}
+                        Showing {{ projects|length }} project{{ projects|length|pluralize }}
+                    {% endif %}
+                </span>
             </div>
         </div>
         <div class="row">
@@ -100,26 +117,38 @@
                             </div>
                             <div class="row">
                                 {% for project in projects %}
-                                        <div class="col-sm-4">
+                                <div class="col-sm-4">
                                     <div class="card">
                                         <div class="card-block">
                                             <h4 class="card-title">{{ project.name }}</h4>
+                                            <h6 class="card-subtitle m-b-10 text-muted">{{ project.category }}</h6>
                                             <h6 class="card-subtitle m-b-10 text-muted">
-                                                <span class="m-r-5">Start Date: {{ project.start_date|naturalday }}</span>
-                                                <span class="">End Date: {{ project.end_date|naturalday }}</span>
+                                                <span class="m-r-5">Start: {{ project.start_date|naturalday }}</span>
+                                                <span class="">End: {{ project.end_date|naturalday }}</span>
                                             </h6>
-                                            <p class="card-text"></p>
-                                            <p class="card-text"><small class="text-muted">
-                                                {{ project.created_at|naturaltime }}</small></p>
-                                            <a href="{% url "projects:milestone" id=project.id %}" class="card-link">Milestones</a>
-                                            <a href="{% url "projects:applications" id=project.id %}" class="card-link">Applications</a>
+                                            <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                                            <p class="card-text"><small class="text-muted">Budget: ${{ project.budget|floatformat:2 }}</small></p>
+                                            <p class="card-text"><small class="text-muted">{{ project.created_at|naturaltime }}</small></p>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-primary" onclick="openEditModal({{ project.pk }}, '{{ project.name|escapejs }}', '{{ project.category|escapejs }}', '{{ project.start_date|date:'Y-m-d' }}', '{{ project.end_date|date:'Y-m-d' }}', `{{ project.description|escapejs }}`, {{ project.budget|default:0 }}, [{% for f in project.funding.all %}{{ f.id }}{% if not forloop.last %},{% endif %}{% endfor %}])">Edit</button>
+                                                <a href="{% url 'projects:project_delete' project.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this project?')">Delete</a>
+                                                <a href="{% url "projects:milestone" id=project.id %}" class="btn btn-sm btn-info">Milestones</a>
+                                                <a href="{% url "projects:applications" id=project.id %}" class="btn btn-sm btn-success">Applications</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                    {% empty %}
-                                    <div class="text-center">No project created</div>
+                                {% empty %}
+                                <div class="col-12">
+                                    <div class="alert alert-info text-center">
+                                        {% if search_query %}
+                                            No projects found matching "{{ search_query }}". <a href="{% url 'projects:list' %}" class="alert-link">Show all projects</a>
+                                        {% else %}
+                                            No projects created yet. <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#projectModal" onclick="openCreateModal()">Create your first project</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
                                 {% endfor %}
-
                             </div>
 
                         </div>
@@ -128,91 +157,234 @@
                 </div>
             </div>
         </div>
-        <!-- end row -->
     </div>
-    <div class="modal fade" id="modal-new" style="display: none;">
-        <div class="modal-dialog">
+    
+    <!-- Project Modal -->
+    <div class="modal fade" id="projectModal" style="display: none;">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-             <form action="" method="post" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h4 class="modal-title">Project Details</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-
-                    {%  csrf_token %}
+                <form id="projectForm" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="projectModalLabel">Project Details</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
                         <div class="form-group">
-                            <label>Name</label>
-                            <input class="form-control"
-                                   value="{{ form.name.value }}"
-                                   name="name"
-                                   type="text"/>
+                            <label for="name">Name</label>
+                            <input class="form-control" id="name" name="name" type="text" required/>
                         </div>
                         <div class="form-inline m-b-5">
                             <div class="form-group m-r-5">
                                 <label class="m-r-3">Start Date</label>
-                                <input class="form-control"
-                                        value="{{ form.start_date.value }}"
-                                        name="start_date"
-                                       type="date"/>
+                                <input class="form-control" id="start_date" name="start_date" type="date" required/>
                             </div>
                             <div class="form-group">
                                 <label class="m-r-3">End Date</label>
-                                <input class="form-control"
-                                        value="{{ form.end_date.value }}"
-                                        name="end_date"
-                                       type="date"/>
+                                <input class="form-control" id="end_date" name="end_date" type="date" required/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Category</label>
-                            <select class="form-control"  value="{{ form.category.value }}"
-                                   name="category">
-                                <option>--Select Category---</option>
-                                <option>Agriculture</option>
-                                <option>Infrastructure</option>
-                                <option>Green Initiative</option>
+                            <label for="category">Category</label>
+                            <select class="form-control" id="category" name="category">
+                                <option value="">--Select Category---</option>
+                                <option value="Agriculture">Agriculture</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Green Initiative">Green Initiative</option>
                             </select>
                         </div>
-
                         <div class="form-group">
-                            <label>Funding</label>
-                            <select class="form-control" multiple  value="{{ form.funding.value }}"
-                                   name="funding">
-                                <option >--Select Funding---</option>
+                            <label for="funding">Funding Sources</label>
+                            <div class="form-check-container" style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
                                 {% for f in funding %}
-                                    <option value="{{ f.id }}">{{f.fund_name}}</option>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ f.id }}" id="funding_{{ f.id }}" name="funding">
+                                    <label class="form-check-label" for="funding_{{ f.id }}">
+                                        {{ f.fund_name }} - ${{ f.amount|floatformat:2 }}
+                                    </label>
+                                </div>
+                                {% empty %}
+                                <p class="text-muted">No funding sources available</p>
                                 {% endfor %}
-
-                            </select>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Budget</label>
-                            <input class="form-control" value="{{ form.budget.value }}"
-                                   name="budget" type="tel"/>
+                            <label for="budget">Budget</label>
+                            <input class="form-control" id="budget" name="budget" type="number" step="0.01"/>
                         </div>
-
                         <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control" name="description"> {{ form.description.value }}</textarea>
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4"></textarea>
                         </div>
-                        <div>
-                            <label>Uploading supporting document </label>
-                            <input class="form-control" type="file" name="file">
+                        <div class="form-group">
+                            <label for="file">Supporting Document</label>
+                            <input class="form-control" id="file" type="file" name="file">
                         </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Close</a>
-                    <button type="submit" class="btn btn-success" >Save</button>
-                </div>
-             </form>
+                        <input type="hidden" id="project_id" name="project_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Add Project</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{#{% block pagejs %}#}
-{##}
-{#{% endblock %}#}
+{% block pagejs %}
+<script>
+    $(document).ready(function() {
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        // Setup AJAX with CSRF token
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        // Search functionality
+        let searchTimeout;
+        $('#searchInput').on('input', function() {
+            clearTimeout(searchTimeout);
+            const query = $(this).val();
+            
+            searchTimeout = setTimeout(function() {
+                performSearch(query);
+            }, 300); // Debounce search by 300ms
+        });
+
+        // Handle form submission via AJAX
+        $('#projectForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous error messages
+            $('.text-danger').remove();
+            $('.form-control').removeClass('is-invalid');
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#projectModal').modal('hide');
+                        location.reload(); // Reload the page to show updated data
+                        if (response.message) {
+                            alert(response.message);
+                        }
+                    } else {
+                        // Handle validation errors
+                        if (response.errors) {
+                            displayFormErrors(response.errors);
+                        }
+                        if (response.message) {
+                            alert(response.message);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+        
+        // Initialize App after our custom JavaScript
+        App.init();
+    });
+
+    function performSearch(query) {
+        const url = new URL(window.location);
+        if (query.trim()) {
+            url.searchParams.set('search', query);
+        } else {
+            url.searchParams.delete('search');
+        }
+        window.location.href = url.toString();
+    }
+
+    function clearSearch() {
+        $('#searchInput').val('');
+        const url = new URL(window.location);
+        url.searchParams.delete('search');
+        window.location.href = url.toString();
+    }
+
+    function openCreateModal() {
+        $('#projectModalLabel').text('Add Project');
+        $('#submitBtn').text('Add Project');
+        $('#projectForm')[0].reset();
+        $('#project_id').val('');
+        $('.text-danger').remove();
+        $('.form-control').removeClass('is-invalid');
+        $('input[name="funding"]').prop('checked', false);
+        $('#projectForm').attr('action', '{% url "projects:project_create" %}');
+    }
+    
+    function openEditModal(id, name, category, startDate, endDate, description, budget, fundingIds) {
+        $('#projectModalLabel').text('Edit Project');
+        $('#submitBtn').text('Update Project');
+        $('#name').val(name);
+        $('#category').val(category);
+        $('#start_date').val(startDate);
+        $('#end_date').val(endDate);
+        $('#description').val(description);
+        $('#budget').val(budget);
+        $('#project_id').val(id);
+        $('.text-danger').remove();
+        $('.form-control').removeClass('is-invalid');
+        
+        // Clear all funding checkboxes first
+        $('input[name="funding"]').prop('checked', false);
+        
+        // Check the appropriate funding checkboxes
+        if (fundingIds && Array.isArray(fundingIds)) {
+            fundingIds.forEach(function(fundingId) {
+                $('#funding_' + fundingId).prop('checked', true);
+            });
+        }
+        
+        $('#projectForm').attr('action', '/projects/edit/' + id + '/');
+        $('#projectModal').modal('show');
+    }
+    
+    function displayFormErrors(errors) {
+        // Clear previous errors
+        $('.text-danger').remove();
+        $('.form-control').removeClass('is-invalid');
+        
+        // Display new errors
+        $.each(errors, function(field, messages) {
+            const fieldElement = $('#' + field);
+            if (fieldElement.length) {
+                fieldElement.addClass('is-invalid');
+                fieldElement.after('<div class="text-danger">' + messages.join(', ') + '</div>');
+            }
+        });
+    }
+</script>
+{% endblock %}

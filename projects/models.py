@@ -39,7 +39,7 @@ class FbMileStones(models.Model):
     due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    project = models.ForeignKey(FbFunding, related_name="project_milestones", on_delete=models.CASCADE)
+    project = models.ForeignKey(FbProjects, related_name="project_milestones", on_delete=models.CASCADE)
     created_by = models.ForeignKey(FbUser, related_name="created_milestone", on_delete=models.CASCADE)
     assignee = models.ForeignKey(FbUser, related_name="assigned_milestones", on_delete=models.CASCADE)
     description = models.TextField()

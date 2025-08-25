@@ -13,6 +13,7 @@ urlpatterns = [
 
     path("signup/", views.signup, name="signup"),
     path("staff/", views.staff, name="staff"),
+    path("edit-profile/", views.edit_profile, name="edit_profile"),
     path("signup/activate-email", views.activate_email, name="activate_email"),
     path("login-redirect/", views.login_redirect, name="login_redirect"),
     path("login/", views.login, name="login"),

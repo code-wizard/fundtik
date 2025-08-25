@@ -1,0 +1,205 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block pagecss %}
+<style>
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #dee2e6;
+    }
+    .avatar-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content" class="content">
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+        <li class="breadcrumb-item active">Edit Profile</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">Edit Profile</h1>
+    <!-- end page-header -->
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Personal Information</h4>
+                </div>
+                <div class="panel-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="form-group">
+                                    <label>Profile Photo</label>
+                                    <div class="avatar-preview mx-auto mb-3">
+                                        {% if user.avatar %}
+                                            <img src="{{ user.avatar.url }}" alt="Profile Photo" class="profile-avatar" id="avatar-preview">
+                                        {% else %}
+                                            <i class="fa fa-user fa-4x text-muted" id="avatar-icon"></i>
+                                        {% endif %}
+                                    </div>
+                                    {{ form.avatar }}
+                                    {% if form.avatar.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.avatar.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.first_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.middle_name.id_for_label }}">Middle Name</label>
+                                    {{ form.middle_name }}
+                                    {% if form.middle_name.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.middle_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.last_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}">Email Address *</label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.email.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.phone.id_for_label }}">Phone Number *</label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.phone.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Update Profile
+                            </button>
+                            <a href="{% url 'main:dashboard' %}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Account Information</h4>
+                </div>
+                <div class="panel-body">
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Date Joined:</strong> {{ user.date_joined|naturaltime }}</p>
+                    <p><strong>Last Login:</strong> {{ user.last_login|naturaltime }}</p>
+                    <hr>
+                    <a href="{% url 'accounts:change_password' %}" class="btn btn-warning btn-sm">
+                        <i class="fa fa-lock"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pagejs %}
+<script>
+    $(document).ready(function() {
+        // Preview avatar when file is selected
+        $('#id_avatar').on('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#avatar-preview').attr('src', e.target.result).show();
+                    $('#avatar-icon').hide();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Initialize App
+        App.init();
+    });
+</script>
+{% endblock %}

@@ -275,3 +275,21 @@ password_change = login_required(WsPasswordChangeView.as_view())
 
 def staff(request):
     return render(request, "accounts/staff.html")
+
+
+@login_required
+def edit_profile(request):
+    from accounts.forms import ProfileForm
+    
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('accounts:edit_profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ProfileForm(instance=request.user)
+    
+    return render(request, 'accounts/edit_profile.html', {'form': form})

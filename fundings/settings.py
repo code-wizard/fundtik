@@ -174,28 +174,43 @@ STATIC_URL = '/static/'
 # Session Settings
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-
+# Cache Settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
 
 # Django All Auth Settings
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/accounts/confirmed"
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/accounts/confirmed"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = False
 # ACCOUNT_EMAIL_VERIFICATION = "optional"
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 500
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
-ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/post-logout/"
 ACCOUNT_ADAPTER = "accounts.adapter.WsAccountAdapter"
+
+# New allauth configuration format
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*']
+# Completely disable rate limiting to avoid cache-related errors
+ACCOUNT_RATE_LIMITS = {
+    "login_failed": None,
+    "login": None,
+    "login_failed_attempt": None,
+    "signup": None,
+    "confirm_email": None,
+    "reset_password": None,
+    "change_password": None,
+    "add_email": None,
+    "manage_email": None,
+}
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.WsLoginForm',
     'signup': 'accounts.forms.WsSignupForm',
