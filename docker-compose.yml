@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+    depends_on:
+      - db
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - SECRET_KEY=your-secret-key-here-change-in-production
+      - DATABASE_URL=postgresql://fundtik:password@db:5432/fundtik
+    command: sh -c "python manage.py migrate && python setup_fundtik.py && daphne -b 0.0.0.0 -p 8000 fundings.routing:application"
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=fundtik
+      - POSTGRES_USER=fundtik
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  static_volume:

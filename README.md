@@ -6,6 +6,7 @@
 
 Get Fundtik running with sample data in under 2 minutes:
 
+### Local Development
 ```bash
 git clone https://github.com/code-wizard/fundtik.git && cd fundtik
 python3 -m venv .venv && source .venv/bin/activate
@@ -14,12 +15,92 @@ python setup_fundtik.py
 python manage.py runserver
 ```
 
+### Docker Deployment
+For easy deployment using Docker and Docker Compose:
+
+#### Prerequisites
+- Docker installed on your system
+- Docker Compose installed
+- At least 2GB free RAM for containers
+
+#### Quick Start with Docker
+```bash
+git clone https://github.com/code-wizard/fundtik.git && cd fundtik
+docker-compose up --build
+```
+
+The application will be available at http://localhost:8000
+
+#### Detailed Deployment Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/code-wizard/fundtik.git
+   cd fundtik
+   ```
+
+2. **Environment Configuration (Optional):**
+   Create a `.env` file in the project root for custom settings:
+   ```bash
+   DEBUG=False
+   SECRET_KEY=your-super-secret-key-here
+   ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+   DATABASE_URL=postgresql://fundtik:password@db:5432/fundtik
+   ```
+
+3. **Build and run the containers:**
+   ```bash
+   docker-compose up --build
+   ```
+
+4. **Access the application:**
+   - Web application: http://localhost:8000
+   - Admin panel: http://localhost:8000/admin/
+
+#### Production Deployment
+
+For production deployment, update the following in `docker-compose.yml`:
+
+- Change `SECRET_KEY` to a secure random string
+- Update `ALLOWED_HOSTS` to your domain
+- Configure proper database credentials
+- Consider using environment-specific compose files
+
+#### Docker Commands
+
+```bash
+# Start containers in background
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f web
+
+# Stop containers
+docker-compose down
+
+# Rebuild after code changes
+docker-compose up --build --force-recreate
+
+# Clean up (removes volumes)
+docker-compose down -v
+```
+
+#### Detailed Instructions
+For comprehensive deployment instructions including production setup, configuration options, and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+#### Troubleshooting
+
+- **Port already in use:** Change the port mapping in `docker-compose.yml`
+- **Database connection issues:** Ensure PostgreSQL container is healthy
+- **Static files not loading:** Check WhiteNoise configuration
+- **Memory issues:** Increase Docker memory allocation
+
 **🎯 Instant Demo Ready:** Complete with sample users, funding opportunities, projects, and applications!
 
 ## 🏗️ Architecture Overview
 
 - **Backend Framework:** Django 5.2.5 with Django REST Framework
-- **Database:** SQLite (development)
+- **Database:** SQLite (development) / PostgreSQL (production via Docker)
 - **Authentication:** Django Allauth with JWT tokens and custom email/phone authentication
 - **Real-time Features:** Django Channels for WebSocket support
 - **API:** RESTful API with django-rest-auth
